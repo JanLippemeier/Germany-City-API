@@ -1,0 +1,33 @@
+version: "3.0"
+
+volumes: 
+  db_mount:
+
+services:
+  postgresdb:
+    image: postgres
+    container_name: database
+    environment:
+      - POSTGRES_DB=Germany
+      - POSTGRES_PASSWORD=${DEV_DB_PW}
+    ports:
+      - 5432:5432
+    volumes:
+      - db_mount:/var/lib/postgresql/data
+    restart: on-failure
+  adminer:
+    image: adminer
+    ports: 
+      - 8080:8080
+  api:
+    build: ./API
+    container_name: api
+    environment:
+      - DB_HOST=database
+      - DEV_API_KEY=${DEV_API_KEY}
+      - DEV_DB_PW=${DEV_DB_PW}
+    ports:
+      - 5000:80
+    restart: on-failure
+    entrypoint: ["./wait-for-it.sh", "database:5432", "--", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+  
