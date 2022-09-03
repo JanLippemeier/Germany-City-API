@@ -1,14 +1,15 @@
 from fastapi import Depends, APIRouter
-from sqlalchemy import func, cast, String, Integer
+from sqlalchemy import func, cast, String
 from sqlalchemy.orm import Session
 from db import database, models
+import pydantic_models
 
 
 router = APIRouter()
 
 
 
-@router.get("/states")
+@router.get("/states", response_model=list[pydantic_models.state_info])
 def states(db:Session=Depends(database.get_db)):
     return db.query(models.city).with_entities(
         models.state.name,
@@ -22,7 +23,7 @@ def states(db:Session=Depends(database.get_db)):
         models.state.name
     ).all()
 
-@router.get("/cities")
+@router.get("/cities", response_model=list[pydantic_models.city_info])
 def cities(
         db:Session=Depends(database.get_db),
         city_name:str="",
