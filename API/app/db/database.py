@@ -5,8 +5,8 @@ import os
 
 DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_PW = os.environ.get("DEV_DB_PW")
-print(DB_PW)
-SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{DB_PW}@{DB_HOST}/Germany"
+DB_PORT = os.environ.get("DB_PORT","5432")
+SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{DB_PW}@{DB_HOST}:{DB_PORT}/Germany"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
